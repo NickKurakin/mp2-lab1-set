@@ -13,6 +13,8 @@
 using namespace std;
 
 typedef unsigned int TELEM;
+const unsigned int nBit = 32;
+const unsigned int pBit = 5;
 
 class TBitField
 {
