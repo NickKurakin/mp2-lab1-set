@@ -12,6 +12,37 @@ static const int FAKE_INT = -1;
 static TBitField FAKE_BITFIELD(1);
 static TSet FAKE_SET(1);
 
+int main()
+{
+    try {
+        TBitField bits1(5);
+        TBitField bits2(5);
+        TBitField bits3(1);
+        std::cout << "bits1(5): ";
+        std::cin >> bits1;
+        std::cout << "bits2(5): ";
+        std::cin >> bits2;
+        std::cout << "bits1: " << bits1 << endl;
+        std::cout << "bits2: " << bits2 << endl;
+        std::cout << "~bits1: " << ~bits1 << endl;
+        std::cout << "bits1 & bits2: " << (bits1 & bits2) << endl;
+        std::cout << "bits1 | bits2: " << (bits1 | bits2) << endl;
+        bits3 = bits2;
+        std::cout << "bits3 (copy bits2): " << bits3 << endl;
+        std::cout << "bits3 == bits1: " << (bits3 == bits1) << endl;
+        std::cout << "bits3 != bits1: " << (bits3 != bits1) << endl;
+        TBitField bits4(bits1);
+        std::cout << "bits4 (copy bits1): " << bits4 << endl;
+
+    }
+    catch (char a)
+    {
+        std::cout << a;
+    }
+    system("pause");
+    return 1;
+}
+
 TSet::TSet(int mp) : BitField(-1)
 {
 }

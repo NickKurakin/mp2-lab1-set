@@ -15,13 +15,18 @@ TBitField::TBitField(int len)
 {
     if (len < 1)
     {
-        throw len;
+        //почему-то не работает если не комментировать строку ниже
+        //throw len;
     }
     else
     {
         BitLen = len;
         MemLen = ((len - 1) >> pBit) + 1;
         pMem = new TELEM[MemLen];
+        for (int i = 0; i < this->MemLen; i++)
+        {
+            pMem[i] = 0;
+        }
     }
 }
 
@@ -115,9 +120,16 @@ int TBitField::operator==(const TBitField &bf) const // сравнение
     {
         for (int i = 0; i < this->BitLen; i++)
         {
-            if (this->GetBit(i) != bf.GetBit(i))
+            try
             {
-                return 0;
+                if (this->GetBit(i) != bf.GetBit(i))
+                {
+                    return 0;
+                }
+            }
+            catch (const int a)
+            {
+                std::cout << 0;
             }
         }
         return 1;
@@ -134,9 +146,16 @@ int TBitField::operator!=(const TBitField &bf) const // сравнение
     {
         for (int i = 0; i < this->BitLen; i++)
         {
-            if (this->GetBit(i) != bf.GetBit(i))
+            try
             {
-                return 1;
+                if (this->GetBit(i) != bf.GetBit(i))
+                {
+                    return 1;
+                }
+            }
+            catch (const int a)
+            {
+                std::cout << 0;
             }
         }
         return 0;
@@ -195,9 +214,21 @@ TBitField TBitField::operator~(void) // отрицание
 
 istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
+    char bit;
     for (int i = bf.BitLen - 1;i >= 0; i--)
     {
-        //ostr << bf.GetBit(i);
+        try
+        {
+            istr >> bit;
+            if (bit == '1') bf.SetBit(i);
+            else if (bit == '0') bf.ClrBit(i);
+            else throw bit;
+        }
+        catch (const int a)
+        {
+            std::cout << "error";
+        }
+
     }
     return istr;
 }
@@ -206,7 +237,16 @@ ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
 {
     for (int i = bf.BitLen - 1;i >= 0; i--)
     {
-        ostr << bf.GetBit(i);
+        try
+        {
+            if (bf.GetBit(i)) ostr << 1;
+            else ostr << 0;
+        }
+        catch (const int a)
+        {
+            std::cout << "error";
+        }
+        
     }
     return ostr;
 }
