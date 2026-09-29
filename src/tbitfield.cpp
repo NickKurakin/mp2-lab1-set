@@ -15,8 +15,7 @@ TBitField::TBitField(int len)
 {
     if (len < 1)
     {
-        //почему-то не работает если не комментировать строку ниже
-        //throw len;
+        throw len;
     }
     else
     {
@@ -103,6 +102,7 @@ int TBitField::GetBit(const int pos) const // получить значение 
 
 TBitField& TBitField::operator=(const TBitField &bf) // присваивание
 {
+    if (&bf == this) return *this;
     delete pMem;
     this->BitLen = bf.BitLen;
     this->MemLen = bf.MemLen;
@@ -114,90 +114,51 @@ TBitField& TBitField::operator=(const TBitField &bf) // присваивание
     return *this;
 }
 
-int TBitField::operator==(const TBitField &bf) const // сравнение
+bool TBitField::operator==(const TBitField &bf) const // сравнение
 {
-    if (this->BitLen == bf.BitLen)
+    if (this->BitLen != bf.BitLen) return false;
+    for (int i = 0; i < this->BitLen; i++)
     {
-        for (int i = 0; i < this->BitLen; i++)
-        {
-            try
-            {
-                if (this->GetBit(i) != bf.GetBit(i))
-                {
-                    return 0;
-                }
-            }
-            catch (const int a)
-            {
-                std::cout << 0;
-            }
-        }
-        return 1;
+        if (this->GetBit(i) != bf.GetBit(i)) return false;
     }
-    else
-    {
-        return 0;
-    }
+    return true;
 }
 
-int TBitField::operator!=(const TBitField &bf) const // сравнение
+bool TBitField::operator!=(const TBitField &bf) const // сравнение
 {
-    if (this->BitLen == bf.BitLen)
-    {
-        for (int i = 0; i < this->BitLen; i++)
-        {
-            try
-            {
-                if (this->GetBit(i) != bf.GetBit(i))
-                {
-                    return 1;
-                }
-            }
-            catch (const int a)
-            {
-                std::cout << 0;
-            }
-        }
-        return 0;
-    }
-    else
-    {
-        return 1;
-    }
+    return !(bf == *this);
 }
 
 TBitField TBitField::operator|(const TBitField &bf) // операция "или"
 {
-    if (this->BitLen != bf.BitLen)
+    int len = this->BitLen;
+    if (bf.BitLen > this->BitLen) len = bf.BitLen;
+    TBitField newTBitField(len);
+    for (int i = 0; i < this->MemLen;i++)
     {
-        throw this->BitLen;
+        newTBitField.pMem[i] = this->pMem[i];
     }
-    else
+    for (int i = 0; i < bf.MemLen;i++)
     {
-        TBitField newTBitField(*this);
-        for (int i = 0; i < newTBitField.MemLen;i++)
-        {
-            newTBitField.pMem[i] |= bf.pMem[i];
-        }
-        return newTBitField;
+        newTBitField.pMem[i] |= bf.pMem[i];
     }
+    return newTBitField;
 }
 
 TBitField TBitField::operator&(const TBitField &bf) // операция "и"
 {
-    if (this->BitLen != bf.BitLen)
+    int len = this->BitLen;
+    if (bf.BitLen > this->BitLen) len = bf.BitLen;
+    TBitField newTBitField(len);
+    for (int i = 0; i < this->MemLen;i++)
     {
-        throw this->BitLen;
+        newTBitField.pMem[i] = this->pMem[i];
     }
-    else
+    for (int i = 0; i < bf.MemLen;i++)
     {
-        TBitField newTBitField(*this);
-        for (int i = 0; i < newTBitField.MemLen;i++)
-        {
-            newTBitField.pMem[i] &= bf.pMem[i];
-        }
-        return newTBitField;
+        newTBitField.pMem[i] &= bf.pMem[i];
     }
+    return newTBitField;
 }
 
 TBitField TBitField::operator~(void) // отрицание
@@ -215,19 +176,12 @@ TBitField TBitField::operator~(void) // отрицание
 istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
     char bit;
-    for (int i = bf.BitLen - 1;i >= 0; i--)
+    for (int i = 0;i < bf.BitLen; i++)
     {
-        try
-        {
-            istr >> bit;
-            if (bit == '1') bf.SetBit(i);
-            else if (bit == '0') bf.ClrBit(i);
-            else throw bit;
-        }
-        catch (const int a)
-        {
-            std::cout << "error";
-        }
+        istr >> bit;
+        if (bit == '1') bf.SetBit(i);
+        else if (bit == '0') bf.ClrBit(i);
+        else throw bit;
 
     }
     return istr;
@@ -235,17 +189,10 @@ istream &operator>>(istream &istr, TBitField &bf) // ввод
 
 ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
 {
-    for (int i = bf.BitLen - 1;i >= 0; i--)
+    for (int i = 0;i < bf.BitLen; i++)
     {
-        try
-        {
-            if (bf.GetBit(i)) ostr << 1;
-            else ostr << 0;
-        }
-        catch (const int a)
-        {
-            std::cout << "error";
-        }
+        if (bf.GetBit(i)) ostr << 1;
+        else ostr << 0;
         
     }
     return ostr;

@@ -5,12 +5,13 @@
 //
 // Множество - реализация через битовые поля
 
-#include "tset.h"
+//#include "tset.h"
+#include "tbitfield.h"
 
 // Fake variables used as placeholders in tests
 static const int FAKE_INT = -1;
 static TBitField FAKE_BITFIELD(1);
-static TSet FAKE_SET(1);
+//static TSet FAKE_SET(1);
 
 int main()
 {
@@ -33,16 +34,21 @@ int main()
         std::cout << "bits3 != bits1: " << (bits3 != bits1) << endl;
         TBitField bits4(bits1);
         std::cout << "bits4 (copy bits1): " << bits4 << endl;
-
+        TBitField bits5(6);
+        std::cout << "bits5(6): ";
+        std::cin >> bits5;
+        std::cout << "bits5: " << bits5 << endl;
+        std::cout << "bits1 & bits5: " << (bits1 & bits5) << endl;
+        std::cout << "bits1 | bits5: " << (bits1 | bits5) << endl;
     }
-    catch (char a)
+    catch (...)
     {
-        std::cout << a;
+        std::cout << "error" << endl;
     }
     system("pause");
     return 1;
 }
-
+/*
 TSet::TSet(int mp) : BitField(-1)
 {
 }
@@ -133,3 +139,4 @@ ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
     return ostr;
 }
+*/
